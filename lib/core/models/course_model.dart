@@ -3,7 +3,7 @@ class CourseModel {
   final String title;
   final String thumbnailUrl;
   final int durationSeconds;
-  final String description;
+  final List<String> description;
   final String videoUrl;
 
   CourseModel({
