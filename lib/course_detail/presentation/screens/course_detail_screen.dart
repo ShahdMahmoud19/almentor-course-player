@@ -1,7 +1,10 @@
 import 'package:chewie/chewie.dart';
 import 'package:course_player_app/core/models/course_model.dart';
+import 'package:course_player_app/course_detail/presentation/cubit/course_detail_cubit.dart';
+import 'package:course_player_app/course_detail/presentation/cubit/course_detail_state.dart';
+import 'package:course_player_app/course_detail/presentation/widgets/error_state_widget.dart';
 import 'package:flutter/material.dart';
-import 'package:video_player/video_player.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class CourseDetailScreen extends StatefulWidget {
   final CourseModel course;
@@ -13,47 +16,12 @@ class CourseDetailScreen extends StatefulWidget {
 }
 
 class _CourseDetailScreenState extends State<CourseDetailScreen> {
-  late VideoPlayerController _videoController;
-  ChewieController? _chewieController;
+  late final CourseDetailCubit cubit;
   @override
   void initState() {
     super.initState();
-
-    _initializePlayer();
-  }
-
-  Future<void> _initializePlayer() async {
-    _videoController = VideoPlayerController.networkUrl(
-      Uri.parse(widget.course.videoUrl),
-    );
-
-    await _videoController.initialize();
-
-    _chewieController = ChewieController(
-      videoPlayerController: _videoController,
-      //  maxScale: 12.0,
-      autoPlay: false,
-      looping: false,
-
-      allowFullScreen: true,
-      allowMuting: true,
-      allowPlaybackSpeedChanging: true,
-      materialProgressColors: ChewieProgressColors(
-        playedColor: Colors.red,
-        handleColor: Colors.red,
-        bufferedColor: Colors.white54,
-        backgroundColor: Colors.grey.shade700,
-      ),
-    );
-
-    setState(() {});
-  }
-
-  @override
-  void dispose() {
-    _videoController.dispose();
-    _chewieController?.dispose();
-    super.dispose();
+    cubit = context.read<CourseDetailCubit>();
+    cubit.initializePlayer(widget.course.videoUrl);
   }
 
   @override
@@ -77,19 +45,23 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           ),
         ),
       ),
-      body: _chewieController == null
-          ? const Center(
+      body: BlocBuilder<CourseDetailCubit, CourseDetailState>(
+        builder: (context, state) {
+          if (state is CourseDetailLoading) {
+            return const Center(
               child: CircularProgressIndicator(
                 semanticsLabel: 'Loading video',
                 strokeWidth: 2.0,
                 color: Colors.white,
               ),
-            )
-          : Column(
+            );
+          } else if (state is CourseDetailReady) {
+            return Column(
               children: [
                 AspectRatio(
+                  // aspectRatio: _videoController.value.aspectRatio,
                   aspectRatio: 16 / 9,
-                  child: Chewie(controller: _chewieController!),
+                  child: Chewie(controller: cubit.chewieController!),
                 ),
 
                 const SizedBox(height: 20),
@@ -103,7 +75,32 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
                 ),
                 //),
               ],
-            ),
+            );
+          }
+          if (state is CourseDetailNoInternet) {
+            return ErrorStateWidget(
+              icon: Icons.wifi_off_rounded,
+              title: 'No Internet Connection',
+              subtitle: 'Please check your internet connection and try again.',
+              onRetry: () {
+                cubit.retry(widget.course.videoUrl);
+              },
+            );
+          }
+          if (state is CourseDetailVideoError) {
+            return ErrorStateWidget(
+              icon: Icons.error_outline_rounded,
+              title: 'Unable to Load Video',
+              subtitle:
+                  'Something went wrong while loading this video. Please try again.',
+              onRetry: () {
+                cubit.retry(widget.course.videoUrl);
+              },
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      ),
     );
   }
 }
