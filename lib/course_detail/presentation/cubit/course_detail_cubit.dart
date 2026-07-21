@@ -1,4 +1,5 @@
 import 'package:chewie/chewie.dart';
+import 'package:course_player_app/core/services/playback_service.dart';
 import 'package:course_player_app/course_detail/presentation/cubit/course_detail_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -9,21 +10,30 @@ class CourseDetailCubit extends Cubit<CourseDetailState> {
   CourseDetailCubit() : super(CourseDetailInitial());
   late VideoPlayerController videoController;
   ChewieController? chewieController;
-  Future<void> initializePlayer(String videoUrl) async {
+  final PlaybackService playbackService = PlaybackService();
+  int lastSavedSecond = 0;
+  VoidCallback? playbackListener;
 
+  Future<void> initializePlayer(
+    String videoUrl, {
+    required String courseId,
+  }) async {
     emit(CourseDetailLoading());
-    final hasInternet =
-    await InternetConnection().hasInternetAccess;
+    final hasInternet = await InternetConnection().hasInternetAccess;
 
-if (!hasInternet) {
-  emit(CourseDetailNoInternet());
-  return;
-}
+    if (!hasInternet) {
+      emit(CourseDetailNoInternet());
+      return;
+    }
     try {
       videoController = VideoPlayerController.networkUrl(Uri.parse(videoUrl));
 
       await videoController.initialize();
-
+      //editt
+      final savedPosition = await playbackService.getSavedPosition(courseId);
+      if (savedPosition > 0) {
+        await videoController.seekTo(Duration(seconds: savedPosition));
+      }
       chewieController = ChewieController(
         videoPlayerController: videoController,
         //  maxScale: 12.0,
@@ -40,22 +50,49 @@ if (!hasInternet) {
           backgroundColor: Colors.grey.shade700,
         ),
       );
+      startPlaybackListener(courseId);
       emit(CourseDetailReady());
-    }
-     catch (e) {
+    } catch (e) {
       emit(CourseDetailVideoError('Failed to load video: ${e.toString()}'));
     }
-
   }
-      Future<void> retry(String videoUrl) async {
-      await initializePlayer(videoUrl);
-    }
 
-    @override
-    Future<void> close() {
-      videoController.dispose();
-      chewieController?.dispose();
-      return super.close();
+  Future<void> retry(String videoUrl, {required String courseId}) async {
+    await initializePlayer(videoUrl, courseId: courseId);
+  }
+  void startPlaybackListener(String courseId) {
+    playbackListener = () async {
+      if (!videoController.value.isInitialized) return;
+
+      if (!videoController.value.isPlaying) return;
+
+      final currentSecond = videoController.value.position.inSeconds;
+
+      if (currentSecond != lastSavedSecond) {
+        lastSavedSecond = currentSecond;
+
+        await playbackService.savePosition(
+          courseId: courseId,
+          seconds: currentSecond,
+        );
+      }
+
+      if (videoController.value.position >= videoController.value.duration) {
+        await playbackService.clearPosition(courseId);
+      }
+    };
+
+    videoController.addListener(playbackListener!);
+  }
+
+  @override
+  Future<void> close() {
+    videoController.dispose();
+    chewieController?.dispose();
+    if (playbackListener != null) {
+      videoController.removeListener(playbackListener!);
     }
+    return super.close();
+  }
 
 }
