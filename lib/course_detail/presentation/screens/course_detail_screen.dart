@@ -2,6 +2,7 @@ import 'package:chewie/chewie.dart';
 import 'package:course_player_app/core/models/course_model.dart';
 import 'package:course_player_app/course_detail/presentation/cubit/course_detail_cubit.dart';
 import 'package:course_player_app/course_detail/presentation/cubit/course_detail_state.dart';
+import 'package:course_player_app/course_detail/presentation/widgets/description_widget.dart';
 import 'package:course_player_app/course_detail/presentation/widgets/error_state_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -21,7 +22,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   void initState() {
     super.initState();
     cubit = context.read<CourseDetailCubit>();
-    cubit.initializePlayer(widget.course.videoUrl);
+    cubit.initializePlayer(widget.course.videoUrl, courseId: widget.course.id);
   }
 
   @override
@@ -59,21 +60,12 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
             return Column(
               children: [
                 AspectRatio(
-                  // aspectRatio: _videoController.value.aspectRatio,
-                  aspectRatio: 16 / 9,
+                  aspectRatio: cubit.videoController.value.aspectRatio,
                   child: Chewie(controller: cubit.chewieController!),
                 ),
 
                 const SizedBox(height: 20),
-
-                //Padding(
-                // padding: const EdgeInsets.all(16),
-                //    child:
-                Text(
-                  widget.course.description,
-                  style: const TextStyle(fontSize: 16, color: Colors.white),
-                ),
-                //),
+                DescriptionWidget(desc: widget.course.description),
               ],
             );
           }
@@ -83,7 +75,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               title: 'No Internet Connection',
               subtitle: 'Please check your internet connection and try again.',
               onRetry: () {
-                cubit.retry(widget.course.videoUrl);
+                cubit.retry(widget.course.videoUrl, courseId: widget.course.id);
               },
             );
           }
@@ -94,7 +86,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               subtitle:
                   'Something went wrong while loading this video. Please try again.',
               onRetry: () {
-                cubit.retry(widget.course.videoUrl);
+                cubit.retry(widget.course.videoUrl, courseId: widget.course.id);
               },
             );
           }
