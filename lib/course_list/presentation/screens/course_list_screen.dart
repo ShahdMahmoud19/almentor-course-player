@@ -1,24 +1,32 @@
 import 'package:course_player_app/core/services/course_service.dart';
+import 'package:course_player_app/core/theme/app_colors.dart';
+import 'package:course_player_app/course_detail/presentation/cubit/course_detail_cubit.dart';
 import 'package:course_player_app/course_detail/presentation/screens/course_detail_screen.dart';
+import 'package:course_player_app/course_list/presentation/widgets/image_widget.dart';
+import 'package:course_player_app/course_list/presentation/widgets/course_progress_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
-class CourseListScreen extends StatelessWidget {
+class CourseListScreen extends StatefulWidget {
   const CourseListScreen({super.key});
 
   @override
+  State<CourseListScreen> createState() => _CourseListScreenState();
+}
+
+class _CourseListScreenState extends State<CourseListScreen> {
+  @override
   Widget build(BuildContext context) {
     final courses = CourseService.getAllCourses();
-    final watchedSeconds = 10;
-
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primary,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.primary,
         title: const Text(
           'Course List',
           style: TextStyle(
             fontSize: 22,
-            color: Colors.white,
+            color: AppColors.accent,
             fontWeight: FontWeight.bold,
           ),
         ),
@@ -41,15 +49,18 @@ class CourseListScreen extends StatelessWidget {
                 itemCount: courses.length,
                 itemBuilder: (context, index) {
                   final course = courses[index];
-                  final progress = watchedSeconds / course.durationSeconds;
                   return GestureDetector(
-                    onTap: () {
-                      Navigator.push(
+                    onTap: () async {
+                      await Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => CourseDetailScreen(),
+                          builder: (_) => BlocProvider(
+                            create: (_) => CourseDetailCubit(),
+                            child: CourseDetailScreen(course: course),
+                          ),
                         ),
                       );
+                      setState(() {});
                     },
                     child: Padding(
                       padding: const EdgeInsets.only(
@@ -58,66 +69,21 @@ class CourseListScreen extends StatelessWidget {
                         top: 6.0,
                       ),
                       child: Card(
-                        color: const Color.fromARGB(255, 29, 28, 28),
+                        color: AppColors.card,
                         child: Column(
                           children: [
-                            ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child: Image.network(
-                                course.thumbnailUrl,
-                                width: double.infinity,
-                                height: 200,
-                                fit: BoxFit.cover,
-                              ),
-                            ),
+                            ImageWidget(imageUrl: course.thumbnailUrl),
                             SizedBox(height: 10),
                             Text(
                               course.title,
                               style: const TextStyle(
                                 fontSize: 19,
-                                color: Colors.white,
+                                color: AppColors.accent,
                                 fontWeight: FontWeight.bold,
                               ),
                             ),
-                            //),
                             SizedBox(height: 8),
-                            Row(
-                              children: [
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.only(
-                                      // left: 2.0,
-                                      top: 6.0,
-                                    ),
-                                    child: LinearProgressIndicator(
-                                      minHeight: 5,
-                                      value: progress,
-                                      borderRadius: BorderRadius.circular(10),
-                                      backgroundColor: Colors.grey[300],
-                                      valueColor:
-                                          const AlwaysStoppedAnimation<Color>(
-                                            Colors.red,
-                                          ),
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 10),
-                                Padding(
-                                  padding: const EdgeInsets.only(
-                                    right: 5.0,
-                                    // left: 7,
-                                    bottom: 4.0,
-                                  ),
-                                  child: Text(
-                                    '${(progress * 100).toInt()}%',
-                                    style: const TextStyle(
-                                      fontSize: 17,
-                                      color: Colors.white,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                            CourseProgressWidget(course: course),
                           ],
                         ),
                       ),
