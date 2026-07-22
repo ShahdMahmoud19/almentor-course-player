@@ -4,7 +4,7 @@ A Flutter application that allows users to browse courses, watch videos, and aut
 
 ---
 🎥 **Demo Video:**  
-[Watch the demo here](YOUR_VIDEO_LINK)
+[Watch the demo here](https://drive.google.com/file/d/1fmwexcvW-4RZpwjqbwuDIeAl5pFeF0J3/view?usp=drivesdk)
 
 ---
 
