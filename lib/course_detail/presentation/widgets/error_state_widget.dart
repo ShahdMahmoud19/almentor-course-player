@@ -52,7 +52,7 @@ class ErrorStateWidget extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 15,
-                color: Colors.grey.shade400,
+                color: AppColors.grey400,
                 height: 1.5,
               ),
             ),
