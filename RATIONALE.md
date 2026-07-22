@@ -14,7 +14,6 @@ SharedPreferences is lightweight and works well for storing simple values such a
 
 ## What I would improve with more time
 
-- Automatically update the course list progress while the user is watching a video.
 - Mark completed courses with a "Completed" badge.
 - Increase test coverage with additional widget and integration tests.
 - Support subtitles and multiple video quality options.
