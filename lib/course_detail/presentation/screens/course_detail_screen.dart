@@ -1,5 +1,6 @@
 import 'package:chewie/chewie.dart';
 import 'package:course_player_app/core/models/course_model.dart';
+import 'package:course_player_app/core/theme/app_colors.dart';
 import 'package:course_player_app/course_detail/presentation/cubit/course_detail_cubit.dart';
 import 'package:course_player_app/course_detail/presentation/cubit/course_detail_state.dart';
 import 'package:course_player_app/course_detail/presentation/widgets/description_widget.dart';
@@ -28,11 +29,11 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.black,
+      backgroundColor: AppColors.primary,
       appBar: AppBar(
-        backgroundColor: Colors.black,
+        backgroundColor: AppColors.primary,
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          icon: const Icon(Icons.arrow_back, color: AppColors.accent),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -41,7 +42,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
           widget.course.title,
           style: const TextStyle(
             fontSize: 20,
-            color: Colors.white,
+            color: AppColors.accent,
             //fontWeight: FontWeight.bold,
           ),
         ),
@@ -53,7 +54,7 @@ class _CourseDetailScreenState extends State<CourseDetailScreen> {
               child: CircularProgressIndicator(
                 semanticsLabel: 'Loading video',
                 strokeWidth: 2.0,
-                color: Colors.white,
+                color: AppColors.accent,
               ),
             );
           } else if (state is CourseDetailReady) {

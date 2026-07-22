@@ -1,3 +1,4 @@
+import 'package:course_player_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class ErrorStateWidget extends StatelessWidget {
@@ -24,11 +25,11 @@ class ErrorStateWidget extends StatelessWidget {
           children: [
             CircleAvatar(
               radius: 42,
-              backgroundColor: Colors.red.withValues(alpha: 0.12),
+              backgroundColor: AppColors.secondary.withValues(alpha: 0.12),
               child: Icon(
                 icon,
                 size: 42,
-                color: Colors.red,
+                color: AppColors.secondary,
               ),
             ),
 
@@ -40,7 +41,7 @@ class ErrorStateWidget extends StatelessWidget {
               style: const TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.white,
+                color: AppColors.accent,
               ),
             ),
 
@@ -65,8 +66,8 @@ class ErrorStateWidget extends StatelessWidget {
                 icon: const Icon(Icons.refresh),
                 label: const Text("Retry"),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.secondary,
+                  foregroundColor: AppColors.accent,
                   padding: const EdgeInsets.symmetric(vertical: 14),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(14),

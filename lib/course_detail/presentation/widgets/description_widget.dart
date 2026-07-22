@@ -1,3 +1,4 @@
+import 'package:course_player_app/core/theme/app_colors.dart';
 import 'package:flutter/material.dart';
 
 class DescriptionWidget extends StatelessWidget {
@@ -14,7 +15,7 @@ class DescriptionWidget extends StatelessWidget {
           const Text(
             'What you will learn',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.accent,
               fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
@@ -27,13 +28,13 @@ class DescriptionWidget extends StatelessWidget {
               child: Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const Icon(Icons.check, color: Colors.white, size: 22),
+                  const Icon(Icons.check, color: AppColors.accent, size: 22),
                   const SizedBox(width: 12),
                   Expanded(
                     child: Text(
                       item,
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.accent,
                         fontSize: 16,
                         height: 1.6,
                       ),
