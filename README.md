@@ -61,7 +61,7 @@ flutter test
 - Unit Test for PlaybackService
 - Widget Test for ErrorStateWidget
 
-For implementation details, see:
+## Additional Documentation
 
-- RATIONALE.md
-- AI_DISCLOSURE.md
+- 📄 [Project Rationale](RATIONALE.md)
+- 🤖 [AI Use Disclosure](AI_DISCLOSURE.md)
