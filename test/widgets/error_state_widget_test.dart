@@ -30,7 +30,6 @@ void main() {
     expect(find.text('Retry'), findsOneWidget);
     await tester.tap(find.text('Retry'));
     await tester.pump();
-
     expect(retryPressed, isTrue);
   });
 }
