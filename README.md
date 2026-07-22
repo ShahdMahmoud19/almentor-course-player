@@ -1,17 +1,67 @@
-# course_player_app
+# Mini Course Player App
 
-A new Flutter project.
+A Flutter application that allows users to browse courses, watch videos, and automatically resume playback from the last watched position.
+
+---
+🎥 **Demo Video:**  
+[Watch the demo here](YOUR_VIDEO_LINK)
+
+---
+
+## Features
+
+- Browse available courses
+- Video playback using Chewie & Video Player
+- Resume playback after reopening the app
+- Course progress tracking
+- No internet and video error handling with retry support
+- Image loading and fallback UI
+- Unit and Widget tests
+
+---
+
+## Tech Stack
+
+- Flutter
+- Flutter Bloc (Cubit)
+- Chewie
+- Video Player
+- SharedPreferences
+
+---
+
+## Project Structure
+
+- Course List Screen
+- Course Detail Screen
+- Playback Service
+- Shared Preferences persistence
+
+---
 
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+```bash
+flutter pub get
+flutter run
+```
 
-A few resources to get you started if this is your first Flutter project:
+---
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
+## Running Tests
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```bash
+flutter test
+```
+
+---
+
+## Tests Included
+
+- Unit Test for PlaybackService
+- Widget Test for ErrorStateWidget
+
+For implementation details, see:
+
+- RATIONALE.md
+- AI_DISCLOSURE.md
